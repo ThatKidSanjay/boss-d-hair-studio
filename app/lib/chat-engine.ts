@@ -1,4 +1,4 @@
-import {
+﻿import {
   SERVICES,
   isOpenNow,
   getAvailableSlots,
@@ -121,10 +121,10 @@ export function getWelcome(): ChatMessage {
   return {
     id: nextId(),
     role: "bot",
-    text: `Hi! I'm Boss D's AI assistant. 👋\n${
+    text: `Hi! I'm Boss D's AI assistant. ðŸ‘‹\n${
       isOpenNow()
         ? "We're open right now!"
-        : "We're currently closed — but you can still book an appointment!"
+        : "We're currently closed â€” but you can still book an appointment!"
     }\n\nI can help you explore services, check prices, find store hours, or book a visit in real-time.`,
     options: [
       "Services & Prices",
@@ -147,7 +147,7 @@ export function respond(
     replies.push({ id: nextId(), role: "bot", text: "", ...msg });
   const ns = { ...state, draft: { ...state.draft } };
 
-  // — Booking flow steps —
+  // â€” Booking flow steps â€”
   if (ns.step === "service") {
     const svc = matchService(t);
     if (svc) {
@@ -156,7 +156,7 @@ export function respond(
       ns.draft.price = svc.price;
       ns.step = "date";
       push({
-        text: `Great choice! **${svc.title}** (₱${svc.price}, ~${svc.duration} min).\n\nWhen would you like to come in?`,
+        text: `Great choice! **${svc.title}** (â‚±${svc.price}, ~${svc.duration} min).\n\nWhen would you like to come in?`,
         options: ["Today", "Tomorrow", ...makeDateOpts().slice(0, 4)],
       });
     } else {
@@ -231,10 +231,10 @@ export function respond(
       ns.draft.name = t;
       ns.step = "phone";
       push({
-        text: `Nice to meet you, **${t}**! 🤝\n\nWhat's your mobile number? (e.g. 0917 123 4567)`,
+        text: `Nice to meet you, **${t}**! ðŸ¤\n\nWhat's your mobile number? (e.g. 0917 123 4567)`,
       });
     } else {
-      push({ text: "Please enter your name (2–50 characters)." });
+      push({ text: "Please enter your name (2â€“50 characters)." });
     }
     return { replies, state: ns };
   }
@@ -248,6 +248,11 @@ export function respond(
         serviceId: ns.draft.serviceId!,
         serviceTitle: ns.draft.serviceTitle!,
         price: ns.draft.price!,
+        paymentType: "full",
+        amountPaid: ns.draft.price!,
+        balanceDue: 0,
+        gcashRef: "",
+        paymentStatus: "pending",
         artist: "Any available",
         date: ns.draft.date!,
         time: ns.draft.time!,
@@ -256,7 +261,7 @@ export function respond(
         notes: "Booked via chat assistant",
       });
       push({
-        text: `🎉 **Booking Confirmed!**\n\n📋 Reference: **${b.code}**\n✂️ Service: **${b.serviceTitle}**\n📅 Date: **${formatDateNice(b.date)}** at **${formatSlotLabel(b.time)}**\n👤 Name: **${b.name}**\n💰 Total: **₱${b.price}**\n\nWe look forward to seeing you!`,
+        text: `ðŸŽ‰ **Booking Confirmed!**\n\nðŸ“‹ Reference: **${b.code}**\nâœ‚ï¸ Service: **${b.serviceTitle}**\nðŸ“… Date: **${formatDateNice(b.date)}** at **${formatSlotLabel(b.time)}**\nðŸ‘¤ Name: **${b.name}**\nðŸ’° Total: **â‚±${b.price}**\n\nWe look forward to seeing you!`,
         cta: { label: "View Booking Page", href: "/book" },
         options: ["Book another", "Talk to a human", "Thanks!"],
       });
@@ -268,7 +273,7 @@ export function respond(
     }
     return { replies, state: ns };
   }
-  // — Intent detection (idle) —
+  // â€” Intent detection (idle) â€”
   const pickService = () => {
     ns.step = "service";
     push({
@@ -292,7 +297,7 @@ export function respond(
   if (/service|price|menu|offer/i.test(li)) {
     push({
       text: `Here are our studio services:\n\n${SERVICES.map(
-        (s) => `• **${s.title}** — ₱${s.price} (${s.duration} min)\n  ${s.description}`
+        (s) => `â€¢ **${s.title}** â€” â‚±${s.price} (${s.duration} min)\n  ${s.description}`
       ).join("\n\n")}\n\nWould you like to book one?`,
       options: ["Book an appointment", "Back to main menu"],
     });
@@ -300,16 +305,16 @@ export function respond(
     pickService();
   } else if (/hour|open|close|when/i.test(li)) {
     push({
-      text: `🕒 **Business Hours**\nMonday – Saturday: 9:00 AM – 8:00 PM\nSunday: Closed\n\n${
+      text: `ðŸ•’ **Business Hours**\nMonday â€“ Saturday: 9:00 AM â€“ 8:00 PM\nSunday: Closed\n\n${
         isOpenNow()
-          ? "✅ We're currently **open**!"
-          : "⏳ We're currently **closed**."
+          ? "âœ… We're currently **open**!"
+          : "â³ We're currently **closed**."
       }\nWalk-ins are always welcome!`,
       options: ["Book an appointment", "Location"],
     });
   } else if (/where|location|address|map|malolos/i.test(li)) {
     push({
-      text: "📍 **Boss D Hair Studio**\n4097 Gumamela Street, Purok 4, Cofradia,\nCity of Malolos, Bulacan 3000\n\nWe're easy to find on Google Maps!",
+      text: "ðŸ“ **Boss D Hair Studio**\n4097 Gumamela Street, Purok 4, Cofradia,\nCity of Malolos, Bulacan 3000\n\nWe're easy to find on Google Maps!",
       cta: {
         label: "Open in Maps",
         href: "https://maps.app.goo.gl/akvLZBQ9r2TTk9148",
@@ -318,23 +323,23 @@ export function respond(
     });
   } else if (/phone|call|contact|number|tawag/i.test(li)) {
     push({
-      text: "📞 **Contact Us**\nPhone: +63 912 345 6789\nFacebook: Boss D Hair Studio\n\nCall or message us anytime!",
+      text: "ðŸ“ž **Contact Us**\nPhone: +63 912 345 6789\nFacebook: Boss D Hair Studio\n\nCall or message us anytime!",
       cta: { label: "Call Now", href: "tel:+639123456789" },
       options: ["Book an appointment", "Location"],
     });
   } else if (/product|shop|buy|merch/i.test(li)) {
     push({
-      text: "🛍️ **Boss D Collection**\nWe carry premium hair and beauty products selected to complement your salon experience.\n\nVisit us in-store to browse the collection.",
+      text: "ðŸ›ï¸ **Boss D Collection**\nWe carry premium hair and beauty products selected to complement your salon experience.\n\nVisit us in-store to browse the collection.",
       options: ["Book an appointment", "Location"],
     });
   } else if (/human|agent|person|talk/i.test(li)) {
     push({
-      text: "You can reach Boss D directly:\n\n📞 +63 912 345 6789\n💬 In-studio consultation\n📍 4097 Gumamela St., Malolos\n\nMon–Sat · 9:00 AM – 8:00 PM",
+      text: "You can reach Boss D directly:\n\nðŸ“ž +63 912 345 6789\nðŸ’¬ In-studio consultation\nðŸ“ 4097 Gumamela St., Malolos\n\nMonâ€“Sat Â· 9:00 AM â€“ 8:00 PM",
       cta: { label: "Call Now", href: "tel:+639123456789" },
     });
   } else if (/thank|salamat|nice|great|awesome|cool/i.test(li)) {
     push({
-      text: "You're welcome! 😊 Anything else I can help with?",
+      text: "You're welcome! ðŸ˜Š Anything else I can help with?",
       options: [
         "Book an appointment",
         "Services & Prices",
@@ -349,7 +354,7 @@ export function respond(
     else mainMenu();
   } else {
     push({
-      text: "I can help with:\n• Services & prices\n• Booking appointments\n• Store hours & location\n• Contact info\n\nWhat would you like to know?",
+      text: "I can help with:\nâ€¢ Services & prices\nâ€¢ Booking appointments\nâ€¢ Store hours & location\nâ€¢ Contact info\n\nWhat would you like to know?",
       options: [
         "Services & Prices",
         "Book an appointment",
@@ -361,3 +366,4 @@ export function respond(
 
   return { replies, state: ns };
 }
+

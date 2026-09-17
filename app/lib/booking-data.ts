@@ -1,9 +1,19 @@
+export type PaymentType = "downpayment" | "full";
+export type PaymentStatus = "verified" | "pending";
+
 export interface Booking {
   id: string;
   code: string;
   serviceId: string;
   serviceTitle: string;
   price: number;
+  paymentType: PaymentType;
+  amountPaid: number;
+  balanceDue: number;
+  gcashRef: string;
+  gcashAccountName?: string;
+  receiptImage?: string;
+  paymentStatus: PaymentStatus;
   artist: string;
   date: string;
   time: string;
@@ -11,6 +21,36 @@ export interface Booking {
   phone: string;
   notes: string;
   createdAt: number;
+}
+
+export const GCASH_ACCOUNT = {
+  name: "BOSS D HAIR STUDIO / David Arreza",
+  shortName: "BOSS D HAIR STUDIO",
+  rawNumber: "09171234567",
+  formattedNumber: "0917 123 4567",
+  qrPayloadPrefix: "00020101021128500014ph.com.gcash",
+};
+
+export function calculatePayment(price: number, type: PaymentType) {
+  if (type === "full") {
+    return {
+      type,
+      percentage: 100,
+      amountPaid: price,
+      balanceDue: 0,
+      label: "100% Full Payment",
+    };
+  }
+  // 50% down payment
+  const amountPaid = Math.round((price * 0.5) * 100) / 100;
+  const balanceDue = Math.round((price - amountPaid) * 100) / 100;
+  return {
+    type,
+    percentage: 50,
+    amountPaid,
+    balanceDue,
+    label: "50% Down Payment (Slot Deposit)",
+  };
 }
 
 export interface ServiceItem {

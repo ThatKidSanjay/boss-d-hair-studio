@@ -9,7 +9,9 @@ import {
   futureDates,
   saveBooking,
   loadBookings,
+  calculatePayment,
   type Booking,
+  type PaymentType,
 } from "../lib/booking-data";
 import StepService from "./booking/StepService";
 import StepDateTime from "./booking/StepDateTime";
@@ -40,6 +42,7 @@ const EMPTY: FormState = {
 export default function BookingWizard() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(EMPTY);
+  const [paymentType, setPaymentType] = useState<PaymentType>("downpayment");
   const [confirmed, setConfirmed] = useState<Booking | null>(null);
   const [available, setAvailable] = useState<string[]>([]);
   const [dates] = useState(() => futureDates(14));
@@ -114,10 +117,16 @@ export default function BookingWizard() {
     setIsSubmitting(true);
 
     setTimeout(() => {
+      const pymtCalc = calculatePayment(selectedService!.price, paymentType);
       const booking = saveBooking({
         serviceId: form.serviceId,
         serviceTitle: selectedService!.title,
         price: selectedService!.price,
+        paymentType,
+        amountPaid: pymtCalc.amountPaid,
+        balanceDue: pymtCalc.balanceDue,
+        gcashRef: "",
+        paymentStatus: "pending",
         artist: form.artist || "Any available",
         date: form.date,
         time: form.time,
@@ -134,14 +143,15 @@ export default function BookingWizard() {
   const reset = () => {
     setForm(EMPTY);
     setStep(0);
+    setPaymentType("downpayment");
     setConfirmed(null);
     setError("");
   };
   const steps = ["Choose Service", "Date & Stylist", "Your Details"];
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
+    <div className="grid min-w-0 gap-6 sm:gap-8 lg:gap-8 xl:gap-10 lg:grid-cols-[minmax(0,1fr)_340px] xl:grid-cols-[minmax(0,1fr)_380px]">
       {/* ===== Left: wizard steps ===== */}
-      <div>
+      <div className="min-w-0">
         {confirmed ? (
           <BookingSuccess
             booking={confirmed}
@@ -151,53 +161,79 @@ export default function BookingWizard() {
         ) : (
           <>
             {/* Step indicator */}
-            <div className="mb-8 flex items-center gap-2 sm:gap-4">
-              {steps.map((s, i) => (
-                <div key={s} className="flex items-center gap-2 sm:gap-3 flex-1">
-                  <div
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-all ${
-                      i === step
-                        ? "border-[#C9A24D] bg-[#C9A24D] text-[#0A0A0A] shadow-[0_2px_10px_rgba(201,162,77,0.3)]"
-                        : i < step
-                          ? "border-[#C9A24D] bg-[#C9A24D]/20 text-[#C9A24D]"
-                          : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text-muted)]"
-                    }`}
-                  >
-                    {i < step ? <Check size={15} strokeWidth={3} /> : i + 1}
-                  </div>
-                  <div className="min-w-0">
-                    <span
-                      className={`block text-[10px] font-bold tracking-[0.15em] uppercase truncate ${
-                        i === step
-                          ? "text-[#C9A24D]"
-                          : i < step
-                            ? "text-[var(--text)]"
-                            : "text-[var(--text-faint)]"
-                      }`}
-                    >
-                      STEP {i + 1}
-                    </span>
-                    <span
-                      className={`hidden text-xs truncate sm:block ${
-                        i <= step ? "text-[var(--text)] font-medium" : "text-[var(--text-muted)]"
-                      }`}
-                    >
-                      {s}
-                    </span>
-                  </div>
-                  {i < steps.length - 1 && (
+            <div className="mb-5 sm:mb-8 min-w-0">
+              {/* Mobile Step Badge & Progress */}
+              <div className="flex sm:hidden flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold tracking-[0.15em] text-[#C9A24D] uppercase">
+                    STEP {step + 1} OF {steps.length}
+                  </span>
+                  <span className="text-xs font-semibold text-[var(--text)]">
+                    {steps[step]}
+                  </span>
+                </div>
+                {/* Visual Progress Bar */}
+                <div className="flex gap-1.5 h-1.5 w-full">
+                  {steps.map((_, i) => (
                     <div
-                      className={`h-0.5 flex-1 transition-colors ${
-                        i < step ? "bg-[#C9A24D]" : "bg-[var(--border)]"
+                      key={i}
+                      className={`h-full flex-1 rounded-full transition-all duration-300 ${
+                        i <= step ? "bg-[#C9A24D]" : "bg-[var(--border)]"
                       }`}
                     />
-                  )}
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Tablet & Desktop Step Indicator */}
+              <div className="hidden sm:flex items-center gap-3 md:gap-4">
+                {steps.map((s, i) => (
+                  <div key={s} className="flex items-center gap-2.5 md:gap-3 flex-1 min-w-0">
+                    <div
+                      className={`flex h-8 w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition-all ${
+                        i === step
+                          ? "border-[#C9A24D] bg-[#C9A24D] text-[#0A0A0A] shadow-[0_2px_10px_rgba(201,162,77,0.3)]"
+                          : i < step
+                            ? "border-[#C9A24D] bg-[#C9A24D]/20 text-[#C9A24D]"
+                            : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text-muted)]"
+                      }`}
+                    >
+                      {i < step ? <Check size={14} strokeWidth={3} /> : i + 1}
+                    </div>
+                    <div className="min-w-0">
+                      <span
+                        className={`block text-[9px] md:text-[10px] font-bold tracking-[0.15em] uppercase truncate ${
+                          i === step
+                            ? "text-[#C9A24D]"
+                            : i < step
+                              ? "text-[var(--text)]"
+                              : "text-[var(--text-faint)]"
+                        }`}
+                      >
+                        STEP {i + 1}
+                      </span>
+                      <span
+                        className={`block text-xs truncate ${
+                          i <= step ? "text-[var(--text)] font-medium" : "text-[var(--text-muted)]"
+                        }`}
+                      >
+                        {s}
+                      </span>
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div
+                        className={`h-0.5 flex-1 min-w-4 transition-colors ${
+                          i < step ? "bg-[#C9A24D]" : "bg-[var(--border)]"
+                        }`}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Step Content */}
-            <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6 sm:p-8">
+            <div className="min-w-0 rounded-2xl sm:rounded-3xl border border-[var(--border)] bg-[var(--bg-elevated)] p-4 sm:p-6 md:p-8 shadow-sm">
               {step === 0 && (
                 <StepService
                   selectedId={form.serviceId}
@@ -232,6 +268,8 @@ export default function BookingWizard() {
                   selectedService={selectedService}
                   error={error}
                   isSubmitting={isSubmitting}
+                  paymentType={paymentType}
+                  onChangePayment={setPaymentType}
                   onChange={(patch) => setForm((p) => ({ ...p, ...patch }))}
                   onBack={() => setStep(1)}
                   onSubmit={confirmBooking}
