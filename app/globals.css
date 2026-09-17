@@ -1,0 +1,857 @@
+
+@import "tailwindcss";
+
+/* ============================================================
+   TAILWIND DARK MODE
+   Supports manual `.dark` class on the HTML element.
+   ============================================================ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+/* ============================================================
+   THEME TOKENS — LIGHT MODE
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* Core palette */
+  --bg: #FAF8F3;
+  --bg-alt: #F0EDE4;
+  --bg-elevated: #FFFFFF;
+
+  --bg-80: rgba(250, 248, 243, 0.80);
+  --bg-90: rgba(250, 248, 243, 0.90);
+  --bg-92: rgba(250, 248, 243, 0.92);
+  --bg-95: rgba(250, 248, 243, 0.95);
+  --bg-98: rgba(250, 248, 243, 0.98);
+
+  --bg-hover: rgba(26, 24, 20, 0.035);
+
+  /* Text */
+  --text: #1C1A17;
+  --text-body: rgba(28, 26, 23, 0.65);
+  --text-secondary: rgba(28, 26, 23, 0.48);
+  --text-muted: rgba(28, 26, 23, 0.35);
+  --text-faint: rgba(28, 26, 23, 0.22);
+
+  /* Borders */
+  --border: rgba(26, 24, 20, 0.10);
+  --border-light: rgba(26, 24, 20, 0.06);
+
+  /* Shimmer */
+  --shimmer-a: rgba(26, 24, 20, 0.025);
+  --shimmer-b: rgba(26, 24, 20, 0.07);
+
+  /* Scrollbar */
+  --scrollbar-track: #F0EDE4;
+
+  /* Map */
+  --map-filter: none;
+
+  /* ============================================================
+     BRAND COLORS
+     ============================================================ */
+
+  --luxury-black: #0A0A0A;
+  --deep-charcoal: #151515;
+  --soft-black: #1D1D1D;
+
+  --metallic-gold: #C9A24D;
+  --champagne-gold: #E5C77A;
+  --dark-gold: #8F6B28;
+
+  --gold: #C9A24D;
+  --champagne: #E5C77A;
+
+  /* Hero colors */
+  --hero-bg: #FAF9F6;
+  --hero-text: #1C1C1C;
+  --hero-heading: #292722;
+  --hero-muted: #6B665D;
+  --hero-accent: #B08D3B;
+}
+
+
+/* ============================================================
+   THEME TOKENS — NIGHT MODE
+   ============================================================ */
+
+.dark {
+  color-scheme: dark;
+
+  /* Core palette */
+  --bg: #0A0A0A;
+  --bg-alt: #111111;
+  --bg-elevated: #151515;
+
+  --bg-80: rgba(10, 10, 10, 0.80);
+  --bg-90: rgba(10, 10, 10, 0.90);
+  --bg-92: rgba(10, 10, 10, 0.92);
+  --bg-95: rgba(10, 10, 10, 0.95);
+  --bg-98: rgba(10, 10, 10, 0.98);
+
+  --bg-hover: rgba(255, 255, 255, 0.03);
+
+  /* Text */
+  --text: #F8F6F0;
+  --text-body: rgba(248, 246, 240, 0.60);
+  --text-secondary: rgba(248, 246, 240, 0.45);
+  --text-muted: rgba(248, 246, 240, 0.35);
+  --text-faint: rgba(248, 246, 240, 0.22);
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.10);
+  --border-light: rgba(255, 255, 255, 0.06);
+
+  /* Shimmer */
+  --shimmer-a: rgba(255, 255, 255, 0.03);
+  --shimmer-b: rgba(255, 255, 255, 0.08);
+
+  /* Scrollbar */
+  --scrollbar-track: #0A0A0A;
+
+  /* Map */
+  --map-filter: grayscale(0.6) invert(0.9) contrast(1.1);
+
+  /* Hero colors */
+  --hero-bg: #11100E;
+  --hero-text: #F5F1E8;
+  --hero-heading: #F5F1E8;
+  --hero-muted: #B8B1A5;
+  --hero-accent: #E5C77A;
+}
+
+
+/* ============================================================
+   TAILWIND THEME
+   ============================================================ */
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
+}
+
+
+/* ============================================================
+   GLOBAL RESET
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  transition: background-color 0.3s ease;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+
+  font-family: var(--font-inter), Inter, Arial, Helvetica, sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #C9A24D;
+  color: #FFFFFF;
+}
+
+
+/* ============================================================
+   GOLD TEXT
+   ============================================================ */
+
+.gold-text {
+  background: linear-gradient(
+    135deg,
+    #8F6B28 0%,
+    #E5C77A 28%,
+    #C9A24D 55%,
+    #F0D58A 78%,
+    #8F6B28 100%
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+/* ============================================================
+   GOLD LINES
+   ============================================================ */
+
+.gold-line {
+  width: 48px;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    #8F6B28,
+    #E5C77A,
+    #C9A24D
+  );
+}
+
+.gold-line-wide {
+  width: 80px;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    #8F6B28,
+    #E5C77A,
+    #C9A24D
+  );
+}
+
+
+/* ============================================================
+   LUXURY NOISE
+   ============================================================ */
+
+.luxury-noise::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.035;
+
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+
+  mix-blend-mode: screen;
+}
+
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.revealed,
+.reveal-left.revealed,
+.reveal-right.revealed,
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ============================================================
+   STAGGER ANIMATIONS
+   ============================================================ */
+
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(30px);
+
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stagger-children.revealed > *:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.stagger-children.revealed > *:nth-child(2) {
+  transition-delay: 100ms;
+}
+
+.stagger-children.revealed > *:nth-child(3) {
+  transition-delay: 200ms;
+}
+
+.stagger-children.revealed > *:nth-child(4) {
+  transition-delay: 300ms;
+}
+
+.stagger-children.revealed > *:nth-child(5) {
+  transition-delay: 400ms;
+}
+
+.stagger-children.revealed > *:nth-child(6) {
+  transition-delay: 500ms;
+}
+
+
+/* ============================================================
+   BUTTONS — PREMIUM GOLD
+   ============================================================ */
+
+.btn-gold {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  background: linear-gradient(
+    135deg,
+    #C9A24D,
+    #B8923D
+  );
+
+  color: #0A0A0A;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+
+  padding: 0 2rem;
+  height: 3.5rem;
+
+  overflow: hidden;
+
+  transition:
+    all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    135deg,
+    #E5C77A,
+    #C9A24D
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.4s ease;
+}
+
+.btn-gold:hover::before {
+  opacity: 1;
+}
+
+.btn-gold:hover {
+  box-shadow:
+    0 0 30px rgba(201, 162, 77, 0.3),
+    0 0 60px rgba(201, 162, 77, 0.1);
+}
+
+.btn-gold > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ============================================================
+   BUTTONS — OUTLINE GOLD
+   ============================================================ */
+
+.btn-outline-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  border: 1px solid #B08D3B;
+
+  padding: 0 1.5rem;
+  height: 3.5rem;
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+
+  color: #B08D3B;
+  background: transparent;
+
+  transition:
+    all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background: #B08D3B;
+  border-color: #B08D3B;
+  color: #FFFFFF;
+}
+
+
+/* ============================================================
+   NIGHT MODE BUTTONS
+   ============================================================ */
+
+.dark .btn-gold {
+  background: linear-gradient(
+    135deg,
+    #C9A24D,
+    #B8923D
+  );
+
+  color: #171512;
+}
+
+.dark .btn-gold::before {
+  background: linear-gradient(
+    135deg,
+    #E5C77A,
+    #C9A24D
+  );
+}
+
+.dark .btn-outline-gold {
+  border-color: #C9A24D;
+  color: #E5C77A;
+}
+
+.dark .btn-outline-gold:hover {
+  background: #C9A24D;
+  border-color: #C9A24D;
+  color: #171512;
+}
+
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card-luxury {
+  position: relative;
+
+  border: 1px solid var(--border-light);
+  background: var(--bg-elevated);
+
+  transition:
+    all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-luxury:hover {
+  background: var(--bg);
+
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+.dark .card-luxury:hover {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+
+/* ============================================================
+   GOLD STARS
+   ============================================================ */
+
+.star-gold {
+  color: #E5C77A;
+
+  filter:
+    drop-shadow(0 0 4px rgba(229, 199, 122, 0.3));
+}
+
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+
+.input-luxury {
+  width: 100%;
+
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+
+  color: var(--text);
+
+  font-size: 14px;
+
+  padding: 1rem 1.25rem;
+
+  outline: none;
+
+  transition:
+    all 0.3s ease;
+}
+
+.input-luxury::placeholder {
+  color: var(--text-muted);
+
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.input-luxury:focus {
+  border-color: rgba(201, 162, 77, 0.5);
+
+  background: var(--bg-elevated);
+
+  box-shadow:
+    0 0 0 3px rgba(201, 162, 77, 0.08);
+}
+
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--shimmer-a) 0%,
+    var(--shimmer-b) 50%,
+    var(--shimmer-a) 100%
+  );
+
+  background-size: 200% 100%;
+
+  animation:
+    shimmer 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation:
+    float 4s ease-in-out infinite;
+}
+
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: var(--bg-92);
+
+  backdrop-filter: blur(12px);
+
+  z-index: 55;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity 0.4s ease;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* ============================================================
+   MOTION PREFERENCE
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button {
+    transition-property:
+      color,
+      background-color,
+      border-color,
+      opacity,
+      transform,
+      box-shadow;
+
+    transition-duration: 250ms;
+    transition-timing-function: ease;
+  }
+}
+
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8F6B28;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E5C77A;
+}
+
+
+/* ============================================================
+   MAP
+   ============================================================ */
+
+.map-embed {
+  border: 0;
+
+  filter: none;
+
+  transition:
+    filter 0.3s ease;
+}
+
+.dark .map-embed {
+  filter:
+    grayscale(0.6)
+    invert(0.9)
+    contrast(1.1);
+}
+
+
+/* ============================================================
+   CHATBOT
+   ============================================================ */
+
+.chat-panel {
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.25),
+    0 0 0 1px var(--border);
+}
+
+.dark .chat-panel {
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px var(--border);
+}
+
+@keyframes chat-bubble-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chat-msg-in {
+  animation:
+    chat-bubble-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+.typing-dot:nth-child(1) {
+  animation:
+    typing-dot 1.2s ease-in-out infinite 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation:
+    typing-dot 1.2s ease-in-out infinite 0.15s;
+}
+
+.typing-dot:nth-child(3) {
+  animation:
+    typing-dot 1.2s ease-in-out infinite 0.3s;
+}
+
+
+/* ============================================================
+   SCHEDULE PAGE
+   ============================================================ */
+
+.slot-available {
+  transition:
+    all 0.15s ease;
+}
+
+.slot-available:hover {
+  background: #C9A24D;
+  color: #0A0A0A;
+  border-color: #C9A24D;
+}
+
+.slot-booked {
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-item::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 10, 0.8) 0%,
+    rgba(10, 10, 10, 0) 60%
+  );
+
+  opacity: 0;
+
+  transition:
+    opacity 0.5s ease;
+}
+
+.gallery-item:hover::after {
+  opacity: 1;
+}
+
+.gallery-item .gallery-label {
+  position: absolute;
+
+  bottom: 1.5rem;
+  left: 1.5rem;
+
+  z-index: 2;
+
+  opacity: 0;
+  transform: translateY(10px);
+
+  transition:
+    all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item:hover .gallery-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ============================================================
+   THEME TRANSITIONS
+   ============================================================ */
+
+html,
+body,
+.card-luxury,
+.input-luxury,
+.menu-overlay {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+
+/* ============================================================
+   ACCESSIBILITY — REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
